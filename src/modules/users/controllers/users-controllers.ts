@@ -1,8 +1,31 @@
-import { UserServices } from "../services/user-services"
+import { Request, Response } from 'express'
 
-export class Userscontroller{
-    static async create(req, res){
-        const user = await UserServices.create()
-        res.status(200).send(user)
-    }
+import { UserServices } from '../services/user-services'
+
+export class Userscontroller {
+  static async create(req: Request, res: Response) {
+    const { name, email } = req.body
+
+    const user = await UserServices.create({ name, email })
+    res.status(200).send(user)
+  }
+
+  static async list(req: Request, res: Response) {
+    const users = await UserServices.list()
+    return res.status(200).send(users)
+  }
+
+  static async get(req: Request, res: Response) {
+    const { id } = req.params
+    const user = await UserServices.get(id)
+
+    res.status(200).send(user)
+  }
+
+  static async delete(req: Request, res: Response) {
+    const { id } = req.params
+    await UserServices.delete(id)
+
+    res.status(200).send(true)
+  }
 }
