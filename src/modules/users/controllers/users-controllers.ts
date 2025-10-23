@@ -28,4 +28,13 @@ export class Userscontroller {
 
     res.status(200).send(true)
   }
+
+  static async update(req: Request, res: Response) {
+    const { id } = req.params
+    const { name, email } = req.body
+
+    const user = await UserServices.update(id, name, email)
+
+    res.status(200).send(user)
+  }
 }
