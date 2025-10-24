@@ -4,18 +4,18 @@ type createData = {
   name: string
   description: string
   dateTimeMeal: string
-  onDiet: string
+  onDiet: boolean
   userId: number
 }
 
-type updateData = {
-  id: string
-  name: string
-  description: string
-  dateTimeMeal: string
-  onDiet: string
-  userId: string
-}
+// type updateData = {
+//   id: string
+//   name: string
+//   description: string
+//   dateTimeMeal: string
+//   onDiet: string
+//   userId: string
+// }
 export class MealServices {
   static async create({
     name,
@@ -40,7 +40,7 @@ export class MealServices {
       where: {
         userId,
       },
-      attributes: ['name', 'description', 'dateTimeMeal', 'onDiet'],
+      attributes: ['id', 'name', 'description', 'dateTimeMeal', 'onDiet'],
     })
     if (!meal) throw new Error('Nenhuma refeição registrada')
     return meal
@@ -49,10 +49,18 @@ export class MealServices {
   static async get(id: string, userId: string) {
     const meal = await Meal.findOne({
       where: {
-        id,
         userId,
+        id,
+        // userId,
       },
-      attributes: ['name', 'description', 'dateTimeMeal', 'onDiet'],
+      attributes: [
+        'userId',
+        'id',
+        'name',
+        'description',
+        'dateTimeMeal',
+        'onDiet',
+      ],
     })
 
     if (!meal) throw new Error('Refeição não exite.')
@@ -60,24 +68,44 @@ export class MealServices {
     return meal
   }
 
-  static async update({
-    id,
-    name,
-    description,
-    dateTimeMeal,
-    onDiet,
-    userId,
-  }: updateData) {
-    const meal = await this.get(id, userId)
-
+  static async update(
+    id: string,
+    name: string,
+    description: string,
+    dateTimeMeal: string,
+    onDiet: boolean,
+  ) {
+    const meal = await this.getId(id)
     await meal.update({ name, description, dateTimeMeal, onDiet })
 
     return meal
   }
 
-  static async delete(id: string, userId: string) {
-    const meal = await this.get(id, userId)
+  static async delete(id: string) {
+    const meal = await this.getId(id)
 
     await meal.destroy()
+  }
+
+  static async getId(id: string) {
+    const meal = await Meal.findOne({
+      where: {
+        id,
+      },
+      attributes: ['id', 'name', 'description', 'dateTimeMeal', 'onDiet'],
+    })
+    if (!meal) throw new Error('Refeição não exite.')
+
+    return meal
+  }
+
+  static async amount(userId: string) {
+    const meals = await Meal.count({
+      where: {
+        userId,
+        onDiet: true,
+      },
+    })
+    return meals
   }
 }
