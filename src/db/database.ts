@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize'
+import { env } from 'src/env'
 
-const DATABASE_URL =
-  'mariadb://vinicius:cidade01@localhost:3306/rocketseatenode'
+const DATABASE_LINK = env.DATABASE_URL
 
-export const sequelize = new Sequelize(DATABASE_URL)
+export const sequelize = new Sequelize(DATABASE_LINK)

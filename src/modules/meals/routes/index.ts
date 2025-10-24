@@ -6,3 +6,4 @@ export const mealRoutes = Router()
 
 mealRoutes.post('/:userId', MealControllers.create)
 mealRoutes.get('/:userId', MealControllers.list)
+// mealRoutes.put('/:id/:userid', MealControllers.update)

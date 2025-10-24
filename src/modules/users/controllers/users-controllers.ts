@@ -18,7 +18,6 @@ export class Userscontroller {
   static async get(req: Request, res: Response) {
     const { id } = req.params
     const user = await UserServices.get(id)
-
     res.status(200).send(user)
   }
 
