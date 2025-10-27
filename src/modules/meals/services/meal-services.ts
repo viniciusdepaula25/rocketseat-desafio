@@ -8,14 +8,6 @@ type createData = {
   userId: number
 }
 
-// type updateData = {
-//   id: string
-//   name: string
-//   description: string
-//   dateTimeMeal: string
-//   onDiet: string
-//   userId: string
-// }
 export class MealServices {
   static async create({
     name,
@@ -35,7 +27,7 @@ export class MealServices {
     return meal
   }
 
-  static async list(userId: string) {
+  static async list(userId: number) {
     const meal = await Meal.findAll({
       where: {
         userId,
@@ -46,12 +38,11 @@ export class MealServices {
     return meal
   }
 
-  static async get(id: string, userId: string) {
+  static async get(id: number, userId: number) {
     const meal = await Meal.findOne({
       where: {
         userId,
         id,
-        // userId,
       },
       attributes: [
         'userId',
@@ -69,20 +60,21 @@ export class MealServices {
   }
 
   static async update(
-    id: string,
+    id: number,
+    userId: number,
     name: string,
     description: string,
     dateTimeMeal: string,
     onDiet: boolean,
   ) {
-    const meal = await this.getId(id)
+    const meal = await this.get(id, userId)
     await meal.update({ name, description, dateTimeMeal, onDiet })
 
     return meal
   }
 
-  static async delete(id: string) {
-    const meal = await this.getId(id)
+  static async delete(id: number, userId: number) {
+    const meal = await this.get(id, userId)
 
     await meal.destroy()
   }
@@ -99,7 +91,16 @@ export class MealServices {
     return meal
   }
 
-  static async amount(userId: string) {
+  static async amount(userId: number) {
+    const meals = await Meal.count({
+      where: {
+        userId,
+      },
+    })
+    return meals
+  }
+
+  static async onDietTrue(userId: number) {
     const meals = await Meal.count({
       where: {
         userId,
@@ -108,4 +109,24 @@ export class MealServices {
     })
     return meals
   }
+
+  static async onDietFalse(userId: number) {
+    const meals = await Meal.count({
+      where: {
+        userId,
+        onDiet: false,
+      },
+    })
+    return meals
+  }
+
+  // static async onDietStreak(userId: string) {
+  //   const meals = await Meal.findAll({
+  //     where: {
+  //       userId,
+  //     },
+  //     order: [['dateTimeMeal', 'ASC']],
+  //   })
+
+  // }
 }

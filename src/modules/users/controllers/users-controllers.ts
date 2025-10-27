@@ -4,10 +4,17 @@ import { UserServices } from '../services/user-services'
 
 export class Userscontroller {
   static async create(req: Request, res: Response) {
-    const { name, email } = req.body
+    const { name, email, password } = req.body
 
-    const user = await UserServices.create({ name, email })
+    const user = await UserServices.create({ name, email, password })
     res.status(200).send(user)
+  }
+
+  static async login(req: Request, res: Response) {
+    const { email, password } = req.body
+
+    const output = await UserServices.login(email, password)
+    res.status(200).send(output)
   }
 
   static async list(req: Request, res: Response) {

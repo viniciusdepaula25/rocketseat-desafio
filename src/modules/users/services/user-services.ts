@@ -1,12 +1,16 @@
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 import { User } from 'src/db/model/user'
+import { env } from 'src/env'
 
 type createData = {
   name: string
   email: string
+  password: string
 }
 
 export class UserServices {
-  static async create({ name, email }: createData) {
+  static async create({ name, email, password }: createData) {
     if (!name) throw new Error('É necessario informar o nome.')
     if (!email) throw new Error('É necessario informar o email.')
 
@@ -17,12 +21,51 @@ export class UserServices {
     })
 
     if (findUser) throw new Error('Email já cadastrado')
-
+    const passwordHash = await bcrypt.hash(password, 8)
     const user = await User.create({
       name,
       email,
+      password: passwordHash,
     })
     return user
+  }
+
+  static async login(email: string, password: string) {
+    const user = await User.findOne({
+      where: {
+        email,
+      },
+    })
+
+    if (!user) throw new Error('Email ou senha invalidos')
+
+    const passwordMatch = await bcrypt.compare(
+      password,
+      user.getDataValue('password'),
+    )
+
+    if (!passwordMatch) throw new Error('Email ou senha invalidos')
+
+    const token = jwt.sign(
+      {
+        id: user.getDataValue('id'),
+      },
+      env.JWT_SECRET,
+      {
+        expiresIn: '1d',
+      },
+    )
+
+    const data = user.dataValues
+
+    return {
+      token,
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+      },
+    }
   }
 
   static async list() {
