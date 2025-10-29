@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { User } from 'src/db/model/user'
 import { env } from 'src/env'
+import AppError from 'src/error/app-error'
 
 type createData = {
   name: string
@@ -11,8 +12,9 @@ type createData = {
 
 export class UserServices {
   static async create({ name, email, password }: createData) {
-    if (!name) throw new Error('É necessario informar o nome.')
-    if (!email) throw new Error('É necessario informar o email.')
+    if (!name) throw new AppError('É necessario informar o nome.')
+    if (!email) throw new AppError('É necessario informar o email.')
+    if (!password) throw new AppError('É necessario informar a senha')
 
     const findUser = await User.findOne({
       where: {
@@ -20,7 +22,7 @@ export class UserServices {
       },
     })
 
-    if (findUser) throw new Error('Email já cadastrado')
+    if (findUser) throw new AppError('Email já cadastrado')
     const passwordHash = await bcrypt.hash(password, 8)
     const user = await User.create({
       name,
@@ -37,14 +39,14 @@ export class UserServices {
       },
     })
 
-    if (!user) throw new Error('Email ou senha invalidos')
+    if (!user) throw new AppError('Email ou senha invalidos')
 
     const passwordMatch = await bcrypt.compare(
       password,
       user.getDataValue('password'),
     )
 
-    if (!passwordMatch) throw new Error('Email ou senha invalidos')
+    if (!passwordMatch) throw new AppError('Email ou senha invalidos')
 
     const token = jwt.sign(
       {
@@ -72,7 +74,7 @@ export class UserServices {
     const user = await User.findAll({
       // paranoid: false,
     })
-
+    if (!user) throw new AppError('Nenhum usuario cadastrado')
     return user
   }
 
@@ -85,13 +87,13 @@ export class UserServices {
     })
 
     if (!user)
-      throw new Error('Nenhum usuario encontrado com esse ID informado')
+      throw new AppError('Nenhum usuario encontrado com esse ID informado')
 
     return user
   }
 
   static async delete(id: string) {
-    if (!id) throw new Error('Necessario informar id')
+    if (!id) throw new AppError('Necessario informar id')
 
     const user = await this.get(id)
 
@@ -100,8 +102,10 @@ export class UserServices {
 
   static async update(id: string, name: string, email: string) {
     const user = await this.get(id)
-
     await user.update({ name, email })
+
+    if (!name) throw new AppError('Necessario informar nome')
+    if (!email) throw new AppError('Necessario informar email')
 
     return user
   }

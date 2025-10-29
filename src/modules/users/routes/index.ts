@@ -5,12 +5,12 @@ import { Userscontroller } from '../controllers/users-controllers'
 
 export const userRoutes = Router()
 
+userRoutes.post('/create', Userscontroller.create)
 userRoutes.post('/login', Userscontroller.login)
-userRoutes.post('/', Userscontroller.create)
 
 userRoutes.use(authorized)
 
 userRoutes.get('/', Userscontroller.list)
 userRoutes.get('/:id', Userscontroller.get)
 userRoutes.delete('/:id', Userscontroller.delete)
-userRoutes.put('/:id', Userscontroller.update)
+userRoutes.put('/update/:id', Userscontroller.update)

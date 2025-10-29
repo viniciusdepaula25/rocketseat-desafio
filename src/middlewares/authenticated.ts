@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import { env } from 'src/env'
+import AppError from 'src/error/app-error'
 
 export async function authorized(
   request: Request,
@@ -9,7 +10,7 @@ export async function authorized(
 ) {
   let token = request.headers.authorization
 
-  if (!token) throw new Error('Não autorizado')
+  if (!token) throw new AppError('Não autorizado')
 
   token = token.split(' ')[1]
 
@@ -22,6 +23,6 @@ export async function authorized(
 
     next()
   } catch (err) {
-    throw new Error('Não autorizado')
+    throw new AppError('Não autorizado')
   }
 }

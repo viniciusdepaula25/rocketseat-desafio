@@ -14,7 +14,7 @@ export class MealControllers {
       onDiet,
       userId: Number(userId),
     })
-    res.status(200).send(meal)
+    res.status(201).send(meal)
   }
 
   static async list(req: Request, res: Response) {
@@ -84,6 +84,15 @@ export class MealControllers {
     res.status(200).send({
       userId: Number(userId),
       OnDietFalse: total,
+    })
+  }
+
+  static async onDietStreak(req: Request, res: Response) {
+    const userId = req.user.id
+    const sequency = await MealServices.onDietStreak(userId)
+
+    res.status(200).send({
+      sequency,
     })
   }
 }
