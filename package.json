@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsup src --out-dir build"
+    "build": "tsup src"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -16,8 +16,8 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.4.5",
-    "pg": "^8.16.3"
-    
+    "pg": "^8.16.3",
+    "pg-hstore": "^2.3.4"
   },
   "devDependencies": {
     "@siakit/eslint-config": "^0.0.11",
@@ -25,10 +25,10 @@
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.9.1",
+    "sequelize": "^6.37.7",
     "tsup": "^8.5.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
-    "zod": "^4.1.12",
-    "sequelize": "^6.37.7"
+    "zod": "^4.1.12"
   }
 }
