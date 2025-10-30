@@ -27,12 +27,12 @@ Meal.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       field: 'on_diet',
-      get() {
-        return this.getDataValue('onDiet') === 1
-      },
-      set(val) {
-        this.setDataValue('onDiet', val === true || val === 'S' ? 1 : 0)
-      },
+      // get() {
+      //   return this.getDataValue('onDiet') === 1
+      // },
+      // set(val) {
+      //   this.setDataValue('onDiet', val === true || val === 'S' ? 1 : 0)
+      // },
     },
     userId: {
       type: DataTypes.INTEGER,
