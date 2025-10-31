@@ -32,8 +32,8 @@ export class MealServices {
     if (!description) throw new AppError('É necessario informar a descrição')
     if (!dateTimeMeal)
       throw new AppError('É necessario informar quando a refeição foi feita')
-    if (!onDiet)
-      throw new AppError('É necessario informar o se esta dentro da dieta')
+    if (onDiet === undefined)
+      throw new AppError('É necessario informar se esta dentro da dieta')
     return meal
   }
 
